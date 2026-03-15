@@ -1,0 +1,52 @@
+{
+  "expo": {
+    "name": "Movietastic",
+    "slug": "movietastic",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#07020f"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Movietastic needs camera access to capture objects for your short movies.",
+        "NSPhotoLibraryUsageDescription": "Movietastic needs photo library access to save your movies."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#07020f",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "permissions": [
+        "CAMERA",
+        "WRITE_EXTERNAL_STORAGE",
+        "READ_EXTERNAL_STORAGE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Movietastic to access your camera to capture objects for movies."
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow Movietastic to save your movies to your photo library."
+        }
+      ]
+    ]
+  }
+}
