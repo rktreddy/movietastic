@@ -5,28 +5,30 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "dark",
+    "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#07020f"
+      "backgroundColor": "#FFF8E7"
     },
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "Movietastic needs camera access to capture objects for your short movies.",
-        "NSPhotoLibraryUsageDescription": "Movietastic needs photo library access to save your movies."
+        "NSPhotoLibraryUsageDescription": "Movietastic needs photo library access to save your movies.",
+        "NSMicrophoneUsageDescription": "Movietastic needs microphone access to record voice overs for your movies."
       }
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#07020f",
+        "backgroundColor": "#FFF8E7",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "permissions": [
         "CAMERA",
+        "RECORD_AUDIO",
         "WRITE_EXTERNAL_STORAGE",
         "READ_EXTERNAL_STORAGE"
       ]

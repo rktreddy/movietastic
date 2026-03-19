@@ -1,0 +1,18 @@
+export const PROPS = [
+  { id: "camera", emoji: "\uD83C\uDFA5", label: "Camera" },
+  { id: "clapper", emoji: "\uD83C\uDFAC", label: "Clapper" },
+  { id: "mic", emoji: "\uD83C\uDFA4", label: "Mic" },
+  { id: "star", emoji: "\u2B50", label: "Star" },
+  { id: "trophy", emoji: "\uD83C\uDFC6", label: "Trophy" },
+  { id: "popcorn", emoji: "\uD83C\uDF7F", label: "Popcorn" },
+  { id: "guitar", emoji: "\uD83C\uDFB8", label: "Guitar" },
+  { id: "balloon", emoji: "\uD83C\uDF88", label: "Balloon" },
+  { id: "flower", emoji: "\uD83C\uDF3B", label: "Flower" },
+  { id: "heart", emoji: "\u2764\uFE0F", label: "Heart" },
+  { id: "rainbow", emoji: "\uD83C\uDF08", label: "Rainbow" },
+  { id: "rocket", emoji: "\uD83D\uDE80", label: "Rocket" },
+  { id: "crown", emoji: "\uD83D\uDC51", label: "Crown" },
+  { id: "wand", emoji: "\uD83E\uDE84", label: "Wand" },
+  { id: "soccer", emoji: "\u26BD", label: "Soccer" },
+  { id: "butterfly", emoji: "\uD83E\uDD8B", label: "Butterfly" },
+];
