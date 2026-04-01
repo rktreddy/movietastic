@@ -2,7 +2,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 
 const FRAME_INTERVAL = 33; // ~30fps
 
-function interpolate(keyframes, time) {
+export function interpolate(keyframes, time) {
   if (!keyframes || keyframes.length === 0) return { x: 0, y: 0 };
   if (keyframes.length === 1) return { x: keyframes[0].x, y: keyframes[0].y };
 

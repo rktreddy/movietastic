@@ -1,5 +1,5 @@
-// Pre-built demo movie: "Space Adventure"
-// 3 scenes showing a character exploring different locations
+// Pre-built demo movie: "The Lion King Adventure"
+// 3 scenes showing Lion King characters interacting across locations
 
 // Helper to generate smooth path keyframes
 function makePath(points, totalMs) {
@@ -19,78 +19,174 @@ function makePath(points, totalMs) {
       });
     }
   }
-  // Add final point
   const last = points[points.length - 1];
   keyframes.push({ timestamp: totalMs, x: last[0], y: last[1] });
   return keyframes;
 }
 
 export const DEMO_MOVIE = {
-  title: "Space Adventure",
+  title: "The Lion King Adventure",
   scenes: [
     {
       id: 100,
       backgroundId: "park",
-      characterId: "star",
-      propId: "rocket",
+      characterId: "simba",
+      propId: "star",
       voiceOverUri: null,
-      // Character walks across the park, waves, then heads right
+      // Simba explores the Pride Lands
       keyframes: makePath(
         [
-          [20, 120],
-          [80, 100],
-          [160, 130],
-          [240, 90],
-          [320, 110],
-          [400, 80],
-          [480, 100],
+          [20, 130],
+          [100, 100],
+          [200, 130],
+          [300, 80],
+          [380, 120],
+          [300, 100],
+          [200, 130],
         ],
-        4000
+        4500
       ),
-      duration: 4000,
+      extraActors: [
+        {
+          id: 1,
+          characterId: "nala",
+          propId: "flower",
+          // Nala follows along
+          keyframes: makePath(
+            [
+              [350, 130],
+              [280, 110],
+              [200, 80],
+              [140, 110],
+              [200, 130],
+              [280, 100],
+              [350, 120],
+            ],
+            4500
+          ),
+        },
+      ],
+      duration: 4500,
     },
     {
       id: 101,
-      backgroundId: "space",
-      characterId: "robot",
-      propId: "star",
+      backgroundId: "castle",
+      characterId: "mufasa",
+      propId: "crown",
       voiceOverUri: null,
-      // Character floats around in space
+      // Mufasa at Pride Rock
       keyframes: makePath(
         [
-          [40, 60],
-          [120, 30],
-          [250, 80],
-          [350, 20],
-          [420, 100],
-          [300, 130],
-          [180, 70],
-          [80, 100],
+          [40, 100],
+          [120, 80],
+          [220, 100],
+          [320, 70],
+          [400, 100],
+          [320, 120],
+          [220, 90],
         ],
         5000
       ),
+      extraActors: [
+        {
+          id: 2,
+          characterId: "scar",
+          propId: null,
+          // Scar lurks in the shadows
+          keyframes: makePath(
+            [
+              [420, 130],
+              [380, 120],
+              [340, 130],
+              [300, 110],
+              [340, 130],
+              [380, 120],
+              [420, 130],
+            ],
+            5000
+          ),
+        },
+        {
+          id: 3,
+          characterId: "robot",
+          propId: "star",
+          // Zazu (robot stand-in) flies above
+          keyframes: makePath(
+            [
+              [60, 20],
+              [160, 10],
+              [280, 30],
+              [380, 10],
+              [280, 25],
+              [160, 15],
+              [60, 20],
+            ],
+            5000
+          ),
+        },
+      ],
       duration: 5000,
     },
     {
       id: 102,
       backgroundId: "beach",
-      characterId: "sunny",
-      propId: "trophy",
+      characterId: "timon",
+      propId: "guitar",
       voiceOverUri: null,
-      // Character celebrates on the beach
+      // Timon and Pumbaa celebrate Hakuna Matata
       keyframes: makePath(
         [
           [40, 120],
-          [100, 80],
-          [180, 120],
-          [260, 60],
-          [340, 120],
-          [260, 80],
-          [180, 120],
-          [300, 100],
+          [120, 80],
+          [200, 120],
+          [280, 60],
+          [360, 120],
+          [280, 80],
+          [200, 120],
+          [120, 100],
         ],
         4500
       ),
+      extraActors: [
+        {
+          id: 4,
+          characterId: "pumbaa",
+          propId: "popcorn",
+          // Pumbaa dances along
+          keyframes: makePath(
+            [
+              [300, 130],
+              [240, 100],
+              [180, 130],
+              [120, 80],
+              [180, 130],
+              [240, 100],
+              [300, 130],
+              [360, 110],
+            ],
+            4500
+          ),
+        },
+        {
+          id: 5,
+          characterId: "simba",
+          propId: "trophy",
+          // Grown Simba joins the party
+          keyframes: makePath(
+            [
+              [420, 100],
+              [360, 80],
+              [300, 100],
+              [240, 130],
+              [180, 100],
+              [240, 80],
+              [320, 100],
+              [400, 120],
+            ],
+            4500
+          ),
+        },
+      ],
       duration: 4500,
     },
   ],

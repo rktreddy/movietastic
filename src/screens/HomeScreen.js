@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,71 +7,165 @@ import {
   ScrollView,
   Platform,
 } from "react-native";
-import { COLORS, FONT_MONO, FONT_SERIF, SIZES } from "../theme";
+import { COLORS, FONT_MONO, FONT_SERIF, SIZES, IS_WEB } from "../theme";
+
+// Save/Load helpers using localStorage (web) — gracefully degrade elsewhere
+function getSavedMovies() {
+  if (!IS_WEB) return [];
+  try {
+    const raw = localStorage.getItem("movietastic_saved");
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) { return []; }
+}
+
+function saveMovieToStorage(movie) {
+  if (!IS_WEB) return;
+  try {
+    const saved = getSavedMovies();
+    // Strip voice over URIs (blob URLs don't persist)
+    const stripped = {
+      ...movie,
+      savedAt: Date.now(),
+      scenes: movie.scenes.map((s) => ({ ...s, voiceOverUri: null })),
+    };
+    // Replace if same title exists, else add
+    const idx = saved.findIndex((m) => m.title === movie.title);
+    if (idx >= 0) saved[idx] = stripped;
+    else saved.unshift(stripped);
+    // Keep max 10
+    localStorage.setItem("movietastic_saved", JSON.stringify(saved.slice(0, 10)));
+  } catch (e) { /* storage full or unavailable */ }
+}
+
+function deleteSavedMovie(index) {
+  if (!IS_WEB) return;
+  try {
+    const saved = getSavedMovies();
+    saved.splice(index, 1);
+    localStorage.setItem("movietastic_saved", JSON.stringify(saved));
+  } catch (e) { /* ignore */ }
+}
 
 function HowToGuide({ onClose }) {
   return (
     <View style={styles.guideOverlay}>
-      <View style={styles.guideCard}>
-        <Text style={styles.guideTitle}>How to Make a Movie</Text>
+      <ScrollView contentContainerStyle={styles.guideScroll}>
+        <View style={styles.guideCard}>
+          <Text style={styles.guideTitle}>How to Make a Movie</Text>
 
-        <View style={styles.guideSteps}>
-          <Text style={styles.guideStep}>
-            <Text style={styles.guideNum}>1. </Text>
-            <Text style={styles.guideBold}>Pick a Place</Text> - Choose where your
-            scene happens (park, beach, space...)
+          <Text style={styles.guideSectionTitle}>{"\uD83C\uDFAC"} Quick Start</Text>
+          <View style={styles.guideSteps}>
+            <Text style={styles.guideStep}>
+              <Text style={styles.guideNum}>1. </Text>
+              <Text style={styles.guideBold}>Pick a Place</Text> - Choose a
+              background (park, beach, space, castle...)
+            </Text>
+            <Text style={styles.guideStep}>
+              <Text style={styles.guideNum}>2. </Text>
+              <Text style={styles.guideBold}>Pick Your Star</Text> - Choose a character.
+              Try Simba, Nala, or other fun characters!
+            </Text>
+            <Text style={styles.guideStep}>
+              <Text style={styles.guideNum}>3. </Text>
+              <Text style={styles.guideBold}>Hit "Action!"</Text> - Click and drag
+              to move your character around
+            </Text>
+            <Text style={styles.guideStep}>
+              <Text style={styles.guideNum}>4. </Text>
+              <Text style={styles.guideBold}>Hit "Cut!"</Text> - Stop recording.
+              Characters walk, run, and jump based on how fast you move them
+            </Text>
+          </View>
+
+          <Text style={styles.guideSectionTitle}>{"\u2728"} Creative Tools</Text>
+          <View style={styles.guideSteps}>
+            <Text style={styles.guideStep}>
+              <Text style={styles.guideNum}>5. </Text>
+              <Text style={styles.guideBold}>Feelings</Text> - Give your characters
+              emotions! Make them happy, sad, angry, scared, or cool
+            </Text>
+            <Text style={styles.guideStep}>
+              <Text style={styles.guideNum}>6. </Text>
+              <Text style={styles.guideBold}>Speech Bubbles</Text> - Make characters
+              talk, think, or shout! Pick a quick phrase or type your own
+            </Text>
+            <Text style={styles.guideStep}>
+              <Text style={styles.guideNum}>7. </Text>
+              <Text style={styles.guideBold}>Sound Effects</Text> - Add whooshes,
+              boings, magic sparkles, and more! Tap to preview, long-press to add
+            </Text>
+            <Text style={styles.guideStep}>
+              <Text style={styles.guideNum}>8. </Text>
+              <Text style={styles.guideBold}>Camera Magic</Text> - Make the camera
+              zoom, pan, shake, or go dreamy for each scene
+            </Text>
+            <Text style={styles.guideStep}>
+              <Text style={styles.guideNum}>9. </Text>
+              <Text style={styles.guideBold}>Story Spark</Text> - Stuck? Roll the
+              magic dice for a creative idea!
+            </Text>
+          </View>
+
+          <Text style={styles.guideSectionTitle}>{"\uD83E\uDD81"} Multiple Characters</Text>
+          <View style={styles.guideSteps}>
+            <Text style={styles.guideStep}>
+              <Text style={styles.guideNum}>10. </Text>
+              <Text style={styles.guideBold}>Add characters</Text> - Tap + Add in
+              "Your Cast" to add more characters to a scene
+            </Text>
+            <Text style={styles.guideStep}>
+              <Text style={styles.guideNum}>11. </Text>
+              <Text style={styles.guideBold}>Record each one</Text> - Select a
+              character, hit Action, and record its path
+            </Text>
+          </View>
+
+          <Text style={styles.guideSectionTitle}>{"\uD83C\uDF1F"} Finishing Up</Text>
+          <View style={styles.guideSteps}>
+            <Text style={styles.guideStep}>
+              <Text style={styles.guideNum}>12. </Text>
+              <Text style={styles.guideBold}>Voice Over</Text> - Record narration
+            </Text>
+            <Text style={styles.guideStep}>
+              <Text style={styles.guideNum}>13. </Text>
+              <Text style={styles.guideBold}>More Scenes</Text> - Add scenes for a
+              longer movie
+            </Text>
+            <Text style={styles.guideStep}>
+              <Text style={styles.guideNum}>14. </Text>
+              <Text style={styles.guideBold}>Preview</Text> - Watch your whole movie!
+            </Text>
+          </View>
+
+          <Text style={styles.guideTip}>
+            Tip: Your movies save automatically! Find them on the home screen.
           </Text>
-          <Text style={styles.guideStep}>
-            <Text style={styles.guideNum}>2. </Text>
-            <Text style={styles.guideBold}>Pick Your Star</Text> - Choose a character
-            to be in your movie
-          </Text>
-          <Text style={styles.guideStep}>
-            <Text style={styles.guideNum}>3. </Text>
-            <Text style={styles.guideBold}>Pick a Prop</Text> - Give your character
-            something cool to hold
-          </Text>
-          <Text style={styles.guideStep}>
-            <Text style={styles.guideNum}>4. </Text>
-            <Text style={styles.guideBold}>Hit "Action!"</Text> - Start recording!
-            Move your mouse (or finger) to direct the character around the stage
-          </Text>
-          <Text style={styles.guideStep}>
-            <Text style={styles.guideNum}>5. </Text>
-            <Text style={styles.guideBold}>Hit "Cut!"</Text> - Stop recording when
-            your scene is done
-          </Text>
-          <Text style={styles.guideStep}>
-            <Text style={styles.guideNum}>6. </Text>
-            <Text style={styles.guideBold}>Add Voice</Text> - Record a voice over to
-            narrate what's happening
-          </Text>
-          <Text style={styles.guideStep}>
-            <Text style={styles.guideNum}>7. </Text>
-            <Text style={styles.guideBold}>Add More Scenes</Text> - Tap the + button
-            to add new scenes with different places and characters
-          </Text>
-          <Text style={styles.guideStep}>
-            <Text style={styles.guideNum}>8. </Text>
-            <Text style={styles.guideBold}>Preview</Text> - Watch your whole movie
-            play from start to finish!
-          </Text>
+
+          <TouchableOpacity style={styles.guideCloseBtn} onPress={onClose}>
+            <Text style={styles.guideCloseBtnText}>Got it!</Text>
+          </TouchableOpacity>
         </View>
-
-        <Text style={styles.guideTip}>
-          Tip: Try the demo movie first to see how it all works!
-        </Text>
-
-        <TouchableOpacity style={styles.guideCloseBtn} onPress={onClose}>
-          <Text style={styles.guideCloseBtnText}>Got it!</Text>
-        </TouchableOpacity>
-      </View>
+      </ScrollView>
     </View>
   );
 }
 
-export default function HomeScreen({ onNewMovie, onDemoMovie }) {
+export default function HomeScreen({ onNewMovie, onDemoMovie, onLoadMovie }) {
   const [showGuide, setShowGuide] = useState(false);
+  const [savedMovies, setSavedMovies] = useState([]);
+
+  useEffect(() => {
+    setSavedMovies(getSavedMovies());
+  }, []);
+
+  const handleDelete = (index) => {
+    deleteSavedMovie(index);
+    setSavedMovies(getSavedMovies());
+  };
+
+  const handleLoad = (movie) => {
+    if (onLoadMovie) onLoadMovie(movie);
+  };
 
   return (
     <View style={styles.container}>
@@ -84,11 +178,13 @@ export default function HomeScreen({ onNewMovie, onDemoMovie }) {
         <Text style={styles.tagline}>Make your own movies!</Text>
 
         <View style={styles.features}>
-          <Text style={styles.feature}>{"\u2B50"} 10 cool characters to choose from</Text>
-          <Text style={styles.feature}>{"\uD83C\uDFDE\uFE0F"} 6 awesome places to explore</Text>
+          <Text style={styles.feature}>{"\uD83E\uDD81"} 16 characters with emotions & expressions</Text>
+          <Text style={styles.feature}>{"\uD83D\uDCAC"} Speech bubbles — make characters talk!</Text>
+          <Text style={styles.feature}>{"\uD83D\uDD0A"} Sound effects — whoosh, boing, magic & more</Text>
+          <Text style={styles.feature}>{"\uD83C\uDFA5"} Camera magic — zoom, shake, pan, dreamy</Text>
+          <Text style={styles.feature}>{"\uD83C\uDFB2"} Story Spark — roll the dice for ideas</Text>
           <Text style={styles.feature}>{"\uD83C\uDFA4"} Record your own voice overs</Text>
-          <Text style={styles.feature}>{"\uD83C\uDFAC"} Direct the action with your finger</Text>
-          <Text style={styles.feature}>{"\uD83C\uDF1F"} Add multiple scenes to tell a story</Text>
+          <Text style={styles.feature}>{"\uD83D\uDCBE"} Auto-save your movies</Text>
         </View>
 
         <TouchableOpacity style={styles.newBtn} onPress={onNewMovie}>
@@ -96,7 +192,7 @@ export default function HomeScreen({ onNewMovie, onDemoMovie }) {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.demoBtn} onPress={onDemoMovie}>
-          <Text style={styles.demoBtnText}>{"\u25B6"} Watch Demo Movie</Text>
+          <Text style={styles.demoBtnText}>{"\u25B6"} Watch Lion King Demo</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -105,6 +201,33 @@ export default function HomeScreen({ onNewMovie, onDemoMovie }) {
         >
           <Text style={styles.howToBtnText}>{"\u2753"} How to Make a Movie</Text>
         </TouchableOpacity>
+
+        {/* Saved movies */}
+        {savedMovies.length > 0 && (
+          <View style={styles.savedSection}>
+            <Text style={styles.savedTitle}>{"\uD83D\uDCBE"} Your Saved Movies</Text>
+            {savedMovies.map((movie, idx) => (
+              <View key={idx} style={styles.savedCard}>
+                <TouchableOpacity
+                  style={styles.savedInfo}
+                  onPress={() => handleLoad(movie)}
+                >
+                  <Text style={styles.savedName}>{movie.title}</Text>
+                  <Text style={styles.savedMeta}>
+                    {movie.scenes.length} scene{movie.scenes.length !== 1 ? "s" : ""}
+                    {movie.savedAt ? ` \u00B7 ${new Date(movie.savedAt).toLocaleDateString()}` : ""}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.savedDelete}
+                  onPress={() => handleDelete(idx)}
+                >
+                  <Text style={styles.savedDeleteText}>X</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
+        )}
 
         <Text style={styles.footer}>MOVIETASTIC {"\u00B7"} EST. 2026</Text>
       </ScrollView>
@@ -210,6 +333,59 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: COLORS.teal,
   },
+
+  // Saved movies
+  savedSection: {
+    width: "100%",
+    maxWidth: 400,
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  savedTitle: {
+    fontFamily: FONT_SERIF,
+    fontSize: SIZES.textSubtitle,
+    fontWeight: "700",
+    color: COLORS.purple,
+    textAlign: "center",
+    marginBottom: 10,
+  },
+  savedCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: COLORS.white,
+    borderRadius: SIZES.radiusSmall,
+    borderWidth: 2,
+    borderColor: COLORS.border,
+    padding: 12,
+    marginBottom: 8,
+  },
+  savedInfo: { flex: 1 },
+  savedName: {
+    fontFamily: FONT_MONO,
+    fontSize: SIZES.textBody,
+    fontWeight: "700",
+    color: COLORS.textDark,
+  },
+  savedMeta: {
+    fontFamily: FONT_MONO,
+    fontSize: SIZES.textSmall,
+    color: COLORS.textMuted,
+    marginTop: 2,
+  },
+  savedDelete: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: COLORS.danger + "20",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  savedDeleteText: {
+    color: COLORS.danger,
+    fontSize: 12,
+    fontWeight: "700",
+  },
+
   footer: {
     fontFamily: FONT_MONO,
     color: COLORS.textMuted,
@@ -225,10 +401,13 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: "rgba(0,0,0,0.6)",
+    zIndex: 100,
+  },
+  guideScroll: {
+    flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
-    zIndex: 100,
   },
   guideCard: {
     backgroundColor: COLORS.white,
@@ -236,7 +415,6 @@ const styles = StyleSheet.create({
     padding: 24,
     maxWidth: 500,
     width: "100%",
-    maxHeight: "85%",
   },
   guideTitle: {
     fontFamily: FONT_SERIF,
@@ -246,9 +424,17 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 20,
   },
+  guideSectionTitle: {
+    fontFamily: FONT_SERIF,
+    fontSize: SIZES.textLabel,
+    fontWeight: "700",
+    color: COLORS.purple,
+    marginTop: 12,
+    marginBottom: 6,
+  },
   guideSteps: {
-    gap: 12,
-    marginBottom: 16,
+    gap: 10,
+    marginBottom: 12,
   },
   guideStep: {
     fontFamily: FONT_MONO,

@@ -2,10 +2,10 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from "react-nati
 import { CHARACTERS } from "../data/characters";
 import { COLORS, FONT_MONO, SIZES } from "../theme";
 
-export default function CharacterPicker({ selectedId, onSelect }) {
+export default function CharacterPicker({ selectedId, onSelect, label }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Pick Your Star!</Text>
+      <Text style={styles.title}>{label || "Pick Your Star!"}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         {CHARACTERS.map((char) => (
           <TouchableOpacity
